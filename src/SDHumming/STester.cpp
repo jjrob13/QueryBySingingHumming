@@ -11,9 +11,6 @@
 
 #include "SModel.h"
 //#include "SSearch.h"
-#ifdef WIN32
-	#pragma comment(lib, "SDFuzzySearch.lib")
-#endif
 
 #include "../SDFuzzySearch/SDFuzzySearch.h"
 #include "SUtil.h"

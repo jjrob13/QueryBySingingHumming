@@ -5,10 +5,16 @@ bin/humming
 #vim
 *.swp
 
+#song files
+*.mid
+*.wav
+*.txt
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
+*QBH*
 
 # Compiled Dynamic libraries
 *.so

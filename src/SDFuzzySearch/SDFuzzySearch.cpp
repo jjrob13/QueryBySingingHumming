@@ -27,14 +27,8 @@ int _compareEMDRes(const void *a, const void *b){
 *  Use segmented note sequence as input to measure two melody similarity,
 *  which is fast but less accurate
 */
-#ifdef WIN32
-	SD_SEARCH_DLL int SNoteBasedMatch(const SModel *SQBHModels,const  int nModels, SNote *Query, 
-			  int QueryLen,NoteBasedResStru *myEMDResStru,int SourceLen){
-#else
 	int SNoteBasedMatch(const SModel *SQBHModels,const  int nModels, SNote *Query, 
 			  int QueryLen,NoteBasedResStru *myEMDResStru,int SourceLen){
-#endif
-
 	int i,j;
 	int nCount=0;
 
@@ -94,15 +88,9 @@ int _compareEMDRes(const void *a, const void *b){
 *  Use pitch sequence as input to measure two melody similarity,
 *  which is accurate but slow
 */
-#ifdef WIN32
-	SD_SEARCH_DLL int SFrameBasedMatch(const SModel *SQBHModels, const int nModels, 
-			  float *fQueryPitchVector, int nQueryPitchVectorLen, 
-			  NoteBasedResStru *myEMDResStru, int nCandidate, FrameBasedResStru *res){
-#else
 	int SFrameBasedMatch(const SModel *SQBHModels, const int nModels, 
 			  float *fQueryPitchVector, int nQueryPitchVectorLen, 
 			  NoteBasedResStru *myEMDResStru, int nCandidate, FrameBasedResStru *res){
-#endif
 	int i=0,j=0,k=0, m=0;
 	float fModelMinDist = (float)MAX_NUMBER;
 	float fDist=0.0f;
