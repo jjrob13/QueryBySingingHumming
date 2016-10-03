@@ -11,12 +11,6 @@
 
 #include "SUtil.h"
 
-/*  Compare two float value, this function is mainly used for qsort */
-int _compareFloat(const void *a, const void *b){
-	return (*(float*)a > *(float*)b)? 1:-1; 
-}
-
-
 
 /* For removing the '\r' '\n' char at the end of a string */
 void chomp( char *pszString ){

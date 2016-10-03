@@ -1,3 +1,10 @@
+#compiled binaries
+bin/build_model
+bin/humming
+
+#vim
+*.swp
+
 # Compiled Object files
 *.slo
 *.lo

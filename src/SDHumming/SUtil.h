@@ -16,9 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "STypes.h"
+#include "../SDFuzzySearch/SSearchCommon.h"
 
-/*  Compare two float value, this function is mainly used for qsort */
-int _compareFloat(const void *a, const void *b);
 
 /*
 *  For reading song melody DB's associated information, such as

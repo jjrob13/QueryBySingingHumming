@@ -12,9 +12,10 @@
 #include "SModel.h"
 //#include "SSearch.h"
 #ifdef WIN32
-	#include "SDFuzzySearch.h"
 	#pragma comment(lib, "SDFuzzySearch.lib")
 #endif
+
+#include "../SDFuzzySearch/SDFuzzySearch.h"
 #include "SUtil.h"
 #include "SMelody.h"
 #include <stdio.h>
