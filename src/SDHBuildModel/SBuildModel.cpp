@@ -12,7 +12,9 @@
 #include "SBuildModel.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "midifile.h"
+#include <vector>
 #define PHRASE_SEGMENTATION
 
 using namespace std;
@@ -41,7 +43,10 @@ int BuildSDHummingModel::ReadFromNotes(vector<MIDIINFO> myNotes){
 	for(i=0;i<TotalNoteNumber-1;i++){
 		pMidiNoteStruct[i].iDurationWithRest=pMidiNoteStruct[i+1].iNoteStartTime-pMidiNoteStruct[i].iNoteStartTime;
 	}
-	pMidiNoteStruct[TotalNoteNumber-2].iDurationWithRest=pMidiNoteStruct[TotalNoteNumber-2].iDurationms;
+
+	if(TotalNoteNumber > 1){
+			pMidiNoteStruct[TotalNoteNumber-2].iDurationWithRest=pMidiNoteStruct[TotalNoteNumber-2].iDurationms;
+	}
 	
 	return 0;
 }
@@ -110,6 +115,7 @@ int BuildSDHummingModel::Write2Model(){
 	multimap<int, MidiMetaInfo>::iterator Iter;
 	for (Iter=m_FileTrackmap.begin();Iter!=m_FileTrackmap.end();++Iter){
 		vector<MIDIINFO> myNotes=LoadMidiFile((char*)Iter->second.MidiFilename.c_str());
+
 		if(myNotes.size()==0){
 			printf("file cannot be opened: %s, please check\n",(char*)Iter->second.MidiFilename.c_str());
 			return -1;
@@ -175,10 +181,11 @@ int BuildSDHummingModel::GenFilelist(){
 		return false;
 	}
 
-	while(!InputModelFile.eof()){
-		InputModelFile>>MidiFilename>>trackNo>>MetaInfo;
+	char temp_line[1000];
+	while(InputModelFile.getline(temp_line, 1000, '\n')){
 		countLine++;
 	}
+	cout << "countLine: " << countLine << endl;
 	InputModelFile.clear();
 	InputModelFile.close();
 	
@@ -189,8 +196,22 @@ int BuildSDHummingModel::GenFilelist(){
 		return false;
 	}
 		
-	for(i=0;i<countLine;i++){
-		InputModelFile>>MidiFilename>>trackNo>>MetaInfo;
+	for(string line; getline(InputModelFile, line, '\n');){
+		istringstream ss(line);
+		vector<string> tokens;
+
+		for(string tok; getline(ss, tok, '\t');){
+			tokens.push_back(tok);
+		}
+
+		if(tokens.size() != 3){
+				cout << "Error parsing tmplist.txt" << endl;
+				return false;
+		}
+		MidiFilename = tokens[0];
+		istringstream(tokens[1]) >> trackNo;
+		MetaInfo = tokens[2];
+
 		if(MidiFilename!=""){
 			MidiMetaInfo myMidiInfo;
 			myMidiInfo.MetaInfo=MetaInfo;

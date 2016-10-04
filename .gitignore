@@ -1,6 +1,7 @@
 #compiled binaries
 bin/build_model
 bin/humming
+/data
 
 #vim
 *.swp

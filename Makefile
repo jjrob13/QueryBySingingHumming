@@ -5,6 +5,9 @@ midi_list = bin/48plus2000_midilist.txt
 
 test_all: run_build_model test_search
 
+test_search:
+	bin/humming models/QBH.Model models/QBHModel.info WAVqueries/00013.wav test.txt
+
 run_build_model: 
 	$(build_model_bin) $(midi_list) $(model_dir)
 	
