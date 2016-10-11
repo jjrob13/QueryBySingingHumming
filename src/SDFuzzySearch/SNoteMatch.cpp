@@ -215,6 +215,7 @@ float CEmdWrapper::init(signature_t *Signature1, signature_t *Signature2){
 	
 	if (_n1 > MAX_SIG_SIZE || _n2 > MAX_SIG_SIZE){
 		fprintf(stderr, "emd: Signature size is limited to %d\n", MAX_SIG_SIZE);
+		printf("Got %d and %d\n", _n1, _n2);
 		exit(1);
     }
 	
