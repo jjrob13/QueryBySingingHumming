@@ -15,6 +15,10 @@
 #include <sstream>
 #include "midifile.h"
 #include <vector>
+#include <set>
+#include <string>
+#include <sstream>
+
 #define PHRASE_SEGMENTATION
 
 using namespace std;
@@ -39,6 +43,9 @@ int BuildSDHummingModel::ReadFromNotes(vector<MIDIINFO> myNotes){
 		}
 	}
 
+	printf("Filtered out %d of %d notes.\n",
+		TotalNoteNumber - ValidNoteCount, TotalNoteNumber);
+
 	TotalNoteNumber=ValidNoteCount;
 	for(i=0;i<TotalNoteNumber-1;i++){
 		pMidiNoteStruct[i].iDurationWithRest=pMidiNoteStruct[i+1].iNoteStartTime-pMidiNoteStruct[i].iNoteStartTime;
@@ -55,6 +62,7 @@ vector<MIDIINFO> BuildSDHummingModel::LoadMidiFile(char* szInFile){
 	MidiFile_t myMidi = MidiFile_load(szInFile);
 	
 	int nTracks=MidiFile_getNumberOfTracks(myMidi);
+	cout << "Found " << nTracks << " Tracks in " << szInFile << endl;
 	MidiFileTrack_t curTrack = MidiFile_getFirstTrack(myMidi);
 	int eType=0;
 	int isNoteStartEvent=0;
@@ -101,6 +109,8 @@ vector<MIDIINFO> BuildSDHummingModel::LoadMidiFile(char* szInFile){
 		curTrack = MidiFileTrack_getNextTrack(curTrack);
 	}
 	
+	cout << "Found " << NoteVec.size() << " Notes in " << szInFile << endl;
+
 	return NoteVec;
 }
 
@@ -121,8 +131,18 @@ int BuildSDHummingModel::Write2Model(){
 			return -1;
 		}
 		ReadFromNotes(myNotes);
-		if(!ExtractTrackNo(Iter->first,Iter->second.MetaInfo,(char*)Iter->second.MidiFilename.c_str()))
-			return -1;
+		set<int> seen_tracks;
+		for(int note_num = 0; note_num != myNotes.size(); note_num ++)
+		{
+				seen_tracks.insert(myNotes[note_num].Channel);
+		}
+
+		for(set<int>::iterator it = seen_tracks.begin(); it != seen_tracks.end(); it++)
+		{
+				if(!ExtractTrackNo(*it,Iter->second.MetaInfo,(char*)Iter->second.MidiFilename.c_str()))
+					return -1;
+
+		}
 	}
 	writeExtractedTrack(NewModelFile);
 	writeSongInfo(ModelIDTableFile);
@@ -157,6 +177,8 @@ int ConvertMidilist(char* infile,char* outfile){
 			subname=GetSubstring(InStrVec[i],InStrVec[i].find_last_of('/')+1,InStrVec[i].find_last_of('.')-1);
 		else
 			subname=GetSubstring(InStrVec[i],InStrVec[i].find_last_of('/')+1,InStrVec[i].find_last_of('.')-1);
+
+		//TODO: This seems wrong, as it is hard coding 1 for the trackNo
 		fprintf(fp,"%s\t1\t%s\n",(char*)InStrVec[i].c_str(),(char*)subname.c_str());
 	}
 	fclose(fp);
@@ -250,7 +272,6 @@ int BuildSDHummingModel::writeExtractedTrack(char *OutputModelFileName)
 	int temp=0;
 	int file_count=m_QBHModel.size();
 	fwrite(&file_count,sizeof(int),1,OUTFILE);
-	int countTrack=0;
 	
 	for(VecIter=m_QBHModel.begin();VecIter!=m_QBHModel.end();++VecIter){
 		fwrite(&VecIter->id,sizeof(int),1,OUTFILE);
@@ -288,8 +309,10 @@ bool BuildSDHummingModel::ExtractTrackNo(int TrackNo,string MetaInfo,char* filen
 			tag=1;
 	}
 
-	if(tag==0){
-		m_SongNameVector.push_back(SName);
+	if(1){
+		if(tag == 0)
+				m_SongNameVector.push_back(SName);
+
 		int i=0,j=0,CountTrackNoteNum=0;
 		for(i=0;i<TotalNoteNumber;i++){
 			if(pMidiNoteStruct[i].itrackNo==TrackNo){
@@ -329,7 +352,10 @@ bool BuildSDHummingModel::ExtractTrackNo(int TrackNo,string MetaInfo,char* filen
 				myQBHModel.PhraseOffsetVector.push_back(i);
 		}
 		
-		myQBHModel.MetaInfo=MetaInfo;
+		//We need to tag the meta info with the track number
+		stringstream ss;
+		ss << MetaInfo << TrackNo;
+		myQBHModel.MetaInfo=ss.str();
 		m_QBHModel.push_back(myQBHModel);
 	}
 	

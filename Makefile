@@ -1,3 +1,4 @@
+GCC = g++ -m32 -g -w -fpermissive 
 model_dir = models
 build_model_bin = bin/build_model
 humming_bin = bin/humming
@@ -24,17 +25,17 @@ build_test_model:
 build_all: build_fuzzy_search build_humming build_build_model
 	
 build_fuzzy_search:
-	g++ -m32 -g -w -fpermissive -c src/SDFuzzySearch/*.cpp;
+	$(GCC) -c src/SDFuzzySearch/*.cpp;
 	
 build_build_model:
-	g++ -m32 -g -w -fpermissive -c src/SDHBuildModel/*.cpp src/SDHBuildModel/*.c;\
-	g++ -m32 *.o; mv *.o *.out bin; mv bin/a.out $(build_model_bin);
+	$(GCC) -c src/SDHBuildModel/*.cpp src/SDHBuildModel/*.c;\
+	$(GCC) *.o; mv *.o *.out bin; mv bin/a.out $(build_model_bin);
 
 build_test_model:
 
 build_humming:
-	g++ -g -m32 -w -fpermissive -c src/SDHumming/*.cpp; \
-	g++ -m32 *.o; mv *.o *.out bin; mv bin/a.out $(humming_bin);
+	$(GCC) -c src/SDHumming/*.cpp; \
+	$(GCC) *.o; mv *.o *.out bin; mv bin/a.out $(humming_bin);
 
 clean:
 	rm bin/*.o
