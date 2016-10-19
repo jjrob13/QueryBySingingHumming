@@ -2,6 +2,7 @@
 bin/build_model
 bin/humming
 /data
+/notebooks/.ipynb_checkpoints
 
 #vim
 *.swp
