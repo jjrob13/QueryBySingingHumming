@@ -131,18 +131,9 @@ int BuildSDHummingModel::Write2Model(){
 			return -1;
 		}
 		ReadFromNotes(myNotes);
-		set<int> seen_tracks;
-		for(int note_num = 0; note_num != myNotes.size(); note_num ++)
-		{
-				seen_tracks.insert(myNotes[note_num].Channel);
-		}
+		if(!ExtractTrackNo(Iter->first,Iter->second.MetaInfo,(char*)Iter->second.MidiFilename.c_str()))
+			return -1;
 
-		for(set<int>::iterator it = seen_tracks.begin(); it != seen_tracks.end(); it++)
-		{
-				if(!ExtractTrackNo(*it,Iter->second.MetaInfo,(char*)Iter->second.MidiFilename.c_str()))
-					return -1;
-
-		}
 	}
 	writeExtractedTrack(NewModelFile);
 	writeSongInfo(ModelIDTableFile);
@@ -309,9 +300,8 @@ bool BuildSDHummingModel::ExtractTrackNo(int TrackNo,string MetaInfo,char* filen
 			tag=1;
 	}
 
-	if(1){
-		if(tag == 0)
-				m_SongNameVector.push_back(SName);
+	if(tag==0){
+		m_SongNameVector.push_back(SName);
 
 		int i=0,j=0,CountTrackNoteNum=0;
 		for(i=0;i<TotalNoteNumber;i++){
@@ -352,10 +342,7 @@ bool BuildSDHummingModel::ExtractTrackNo(int TrackNo,string MetaInfo,char* filen
 				myQBHModel.PhraseOffsetVector.push_back(i);
 		}
 		
-		//We need to tag the meta info with the track number
-		stringstream ss;
-		ss << MetaInfo << TrackNo;
-		myQBHModel.MetaInfo=ss.str();
+		myQBHModel.MetaInfo=MetaInfo;
 		m_QBHModel.push_back(myQBHModel);
 	}
 	

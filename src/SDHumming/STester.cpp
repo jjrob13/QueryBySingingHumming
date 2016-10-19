@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <time.h>
 
+#define TOP_N_SONGS 256
 
 
 /* both frame-based and note-based melody feature are extracted */
@@ -90,13 +91,13 @@ int STester(char* szModel, char* szModelinfo, char* szWav, char* szOut){
 	NoteBasedResStru *myEMDResStru=new NoteBasedResStru[nTotalModel];
 	SNoteBasedMatch(SQBHModels, nModels, QueryNotes, nNoteLen,myEMDResStru,nFeaLen);
 
-	FrameBasedResStru *myDTWResStru=new FrameBasedResStru[20];
-	SFrameBasedMatch(SQBHModels, nModels, pFeaBuf, nFeaLen, myEMDResStru, 20, myDTWResStru);
+	FrameBasedResStru *myDTWResStru=new FrameBasedResStru[TOP_N_SONGS];
+	SFrameBasedMatch(SQBHModels, nModels, pFeaBuf, nFeaLen, myEMDResStru, TOP_N_SONGS, myDTWResStru);
 
 	//3, Finalize and print the result
 	FILE *OutFile=fopen(szOut,"a+t");
 	fprintf(OutFile,"%s ",szWav);
-	for(i=0;i<20;i++){
+	for(i=0;i<TOP_N_SONGS;i++){
 		fprintf(OutFile,"%d: %s, %f; ",myDTWResStru[i].nModelID+1,szModelInfoStrs[myDTWResStru[i].nModelID], myDTWResStru[i].fScore);
 		printf("%d: %s, %f\n",myDTWResStru[i].nModelID+1,szModelInfoStrs[myDTWResStru[i].nModelID], myDTWResStru[i].fScore);
 	}
