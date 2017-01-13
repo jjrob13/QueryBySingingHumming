@@ -3,7 +3,10 @@ QueryBySingingHumming
 
 Installation
 ------------
+Requires Ubuntu (or other debian-based OS)
+
 `make install` - will install all dependencies and download all songs
+
 `jupyter notebook` - will start the jupyter server
 
 This repository contains a state-of-the-art system for query-by-singing-humming programmed in C++ (based on references [1] and [2]). It is based on a combined note-based and frame-based approach. A collection of MIDI files and several .WAV queries (extracted from [3]) are also provided for testing. The folders of this repository contain the following files:
