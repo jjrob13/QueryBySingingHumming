@@ -1,0 +1,5 @@
+timidity
+sox
+ffmpeg
+build-essential
+aubio-tools

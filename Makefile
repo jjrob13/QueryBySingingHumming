@@ -40,6 +40,14 @@ build_humming:
 	g++ -g -m32 -w -fpermissive -c src/SDHumming/*.cpp; \
 	g++ -m32 *.o; mv *.o *.out bin; mv bin/a.out $(humming_bin);
 
+install:
+	pip install numpy; pip install -r requirements.txt
+	sudo apt-get install $$(python -c "import sys; print ' '.join(map(str.strip, open('requirements.sys').readlines()))")
+	bash get_data.sh
+	find . -name *.mid > $(build_prod_model)
+	mkdir -p $(model_dir)
+	make build_prod_model clean
+
 clean:
 	rm bin/*.o
 

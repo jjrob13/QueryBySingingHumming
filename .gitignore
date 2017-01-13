@@ -4,6 +4,8 @@ bin/humming
 /data
 /notebooks/.ipynb_checkpoints/
 /tags
+Jang*
+*.pyc
 
 #vim
 *.swp
